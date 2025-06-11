@@ -1,0 +1,83 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; 
+    position: relative;
+}
+
+body {
+    background-image: url('Image (1).png');
+    background-size: cover;
+}
+
+.menu-toggle {
+    position: fixed;
+    top: 10px;
+    left: 20px;
+    z-index: 1100;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    color: black;
+    padding: 10px;
+    line-height: 1.2;
+}
+
+#fullscreenMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    z-index: 1099;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 0.3s ease;
+}
+
+#fullscreenMenu nav li:first-child {
+    margin-bottom: 50px; /* oder ein Wert nach Wunsch */
+}
+
+
+#fullscreenMenu nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+#fullscreenMenu nav li {
+    margin: 10px 0; /* Verringert Abstand zwischen Einträgen */
+    font-size: 1.2rem; /* Optional kleiner machen */
+}
+
+#fullscreenMenu nav a {
+    text-decoration: none;
+    color: black;
+    font-family: Arial, sans-serif;
+}
+
+
+#fullscreenMenu.hidden {
+    display: none;
+}
+
+
+.combo-zone {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    left: 0;
+    right: 0;
+    bottom: 23px;
+    margin: auto;
+    border-radius: 100px;
+    border: solid 1px black;
+    background-image: url('images/fischnetz.jpg');
+    background-size: cover;
+}

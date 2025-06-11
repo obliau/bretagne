@@ -1,0 +1,231 @@
+    const playground = document.body;
+    const movables = [];
+    const kreisNamen = [
+      "alge",
+      "auster",
+      "felsgarnele",
+      "kompassqualle",
+      "napfschnecke",
+      "schlangenseestern",
+      "seeanemone",
+      "seeigel",
+      "hummer",
+      "oktopus",
+      "seepocken",
+      "rochen"
+    ];
+  
+    const combinations = {
+  "alge-napfschnecke": "projekte/briefe.html",
+  "felsgarnele-seepocken": "projekte/egor.html",
+  "kompassqualle-rochen": "projekte/entre-sentieure.html",
+  "hummer-schlangenseestern": "projekte/HumanNature.html",
+  "oktopus-seeanemone": "projekte/IchUndWir.html",
+  "napfschnecke-seeigel": "projekte/mareesImprimees.html",
+  "hummer-rochen": "projekte/menhirküre.html",
+  "felsgarnele-oktopus": "projekte/stayhere.html",
+  "kompassqualle-seeanemone": "projekte/TheInBetween.html",
+  "alge-seeanemone": "projekte/thelake.html",
+  "schlangenseestern-seepocken": "projekte/tiefblau.html",
+  "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
+  //"auster-napfschnecke": "projekte/zwischentoene.html",
+  };
+
+  //Navbar
+    function toggleMenu() {
+    const menu = document.getElementById("fullscreenMenu");
+    menu.classList.toggle("hidden");
+    }
+
+    const attractor = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight - 100,
+      radius: 200,
+      strength: 0.05
+    };
+
+    for (let i = 0; i < kreisNamen.length; i++) {
+      const id = kreisNamen[i];
+      const img = document.createElement('img');
+      img.dataset.id = id;
+      img.src = `images/meerestiere/${id}.png`;
+      img.classList.add('movable');
+      img.style.position = 'absolute';
+
+      const fixedSize = 300;
+      img.style.width = `${fixedSize}px`;
+      img.style.height = `${fixedSize}px`;
+
+      img.style.cursor = 'grab';
+
+      const maxTop = window.innerHeight - fixedSize;
+      const maxLeft = window.innerWidth - fixedSize;
+      let top, left;
+
+      let isInsideAttractor = true;
+      let attempts = 0;
+      const maxAttempts = 100;
+    
+    function checkCombination() {
+  const inZone = movables.filter(el => el.classList.contains("in-zone"));
+
+  if (inZone.length === 2) {
+    const ids = inZone.map(el => el.dataset.id).sort();
+    const key = `${ids[0]}-${ids[1]}`;
+
+    if (combinations[key]) {
+      window.location.href = combinations[key];
+    } 
+  }
+}
+
+do {
+  top = Math.random() * maxTop;
+  left = Math.random() * maxLeft;
+
+  const centerX = left + fixedSize / 2;
+  const centerY = top + fixedSize / 2;
+
+  const dx = centerX - attractor.x;
+  const dy = centerY - attractor.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  isInsideAttractor = distance < attractor.radius + fixedSize / 2;
+
+  attempts++;
+} while (isInsideAttractor && attempts < maxAttempts);
+
+img.style.top = `${top}px`;
+img.style.left = `${left}px`;
+
+
+      const randomRotation = 45 * Math.floor(Math.random() * 360);
+      img.dataset.rotation = randomRotation;
+
+      img._base = { x: left, y: top }; // Store absolute base position
+      img._pos = {
+  currentX: 0,
+  currentY: 0,
+  targetX: 0,
+  targetY: 0,
+  settled: false,
+  vx: (Math.random() - 0.5) * 0.2, // random initial drift velocity
+  vy: (Math.random() - 0.5) * 0.2,
+  driftTimer: 0
+};
+
+      img.style.transform = `translate(0px, 0px) rotate(${randomRotation}deg)`;
+
+      movables.push(img);
+      playground.appendChild(img);
+    }
+
+    
+
+    const attractorEl = document.createElement('div');
+    attractorEl.className = 'attractor';
+    attractorEl.style.left = `${attractor.x}px`;
+    attractorEl.style.top = `${attractor.y}px`;
+    playground.appendChild(attractorEl);
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function animate() {
+      movables.forEach((el) => {
+        const pos = el._pos;
+        const base = el._base;
+
+        // Calculate current screen position of circle center
+        const centerX = base.x + pos.currentX + el.offsetWidth / 2;
+        const centerY = base.y + pos.currentY + el.offsetHeight / 2;
+
+        const dx = attractor.x - centerX;
+const dy = attractor.y - centerY;
+const distance = Math.sqrt(dx * dx + dy * dy);
+
+if (distance < attractor.radius) {
+  const settleThreshold = 4;
+
+  if (distance > settleThreshold) {
+    pos.targetX += dx * attractor.strength;
+    pos.targetY += dy * attractor.strength;
+    pos.settled = false;
+  } else {
+    pos.settled = true;
+  }
+}
+
+// If not being dragged or attracted, apply subtle drifting
+if (!pos.settled) {
+  // Change direction occasionally
+  pos.driftTimer--;
+  if (pos.driftTimer <= 0) {
+    pos.vx = (Math.random() - 0.5) * 0.2;
+    pos.vy = (Math.random() - 0.5) * 0.2;
+    pos.driftTimer = Math.floor(Math.random() * 120 + 60); // change every 1–2 seconds
+  }
+
+  pos.targetX += pos.vx;
+  pos.targetY += pos.vy;
+}
+
+
+// Only interpolate if not settled
+if (!pos.settled) {
+  pos.currentX = lerp(pos.currentX, pos.targetX, 0.1);
+  pos.currentY = lerp(pos.currentY, pos.targetY, 0.1);
+}
+
+
+        // Smoothly interpolate toward target
+        pos.currentX = lerp(pos.currentX, pos.targetX, 0.1);
+        pos.currentY = lerp(pos.currentY, pos.targetY, 0.1);
+
+
+
+
+        const rotation = el.dataset.rotation;
+        el.style.transform = `translate(${pos.currentX}px, ${pos.currentY}px) rotate(${rotation}deg)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Interact.js drag handling
+    interact('.movable').draggable({
+      listeners: {
+        start(event) {
+          event.target.classList.add('dragging');
+        },
+        move(event) {
+          const target = event.target;
+          const pos = target._pos;
+          pos.targetX += event.dx;
+          pos.targetY += event.dy;
+        },
+        end(event) {
+          const target = event.target;
+          target.classList.remove('dragging');
+
+          const pos = target._pos;
+          const x = target._base.x + pos.currentX + target.offsetWidth / 2;
+          const y = target._base.y + pos.currentY + target.offsetHeight / 2;
+
+          const dx = attractor.x - x;
+          const dy = attractor.y - y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < attractor.radius) {
+            target.classList.add("in-zone");
+          } else {
+            target.classList.remove("in-zone");
+          }
+
+          checkCombination();
+        }
+
+      }
+    });
