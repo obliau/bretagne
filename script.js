@@ -16,19 +16,19 @@
     ];
   
     const combinations = {
-  "alge-napfschnecke": "projekte/briefe.html",
-  "felsgarnele-seepocken": "projekte/egor.html",
-  "kompassqualle-rochen": "projekte/entre-sentieure.html",
-  "hummer-schlangenseestern": "projekte/HumanNature.html",
-  "oktopus-seeanemone": "projekte/IchUndWir.html",
-  "napfschnecke-seeigel": "projekte/mareesImprimees.html",
-  "hummer-rochen": "projekte/menhirküre.html",
-  "felsgarnele-oktopus": "projekte/stayhere.html",
-  "kompassqualle-seeanemone": "projekte/TheInBetween.html",
-  "alge-seeanemone": "projekte/thelake.html",
-  "schlangenseestern-seepocken": "projekte/tiefblau.html",
-  "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
-  //"auster-napfschnecke": "projekte/zwischentoene.html",
+      "alge-napfschnecke": "projekte/briefe.html",
+      "felsgarnele-seepocken": "projekte/egor.html",
+      "kompassqualle-rochen": "projekte/entre-sentieure.html",
+      "hummer-schlangenseestern": "projekte/HumanNature.html",
+      "oktopus-seeanemone": "projekte/IchUndWir.html",
+      "napfschnecke-seeigel": "projekte/mareesImprimees.html",
+      "hummer-rochen": "projekte/menhirküre.html",
+      "felsgarnele-oktopus": "projekte/stayhere.html",
+      "kompassqualle-seeanemone": "projekte/TheInBetween.html",
+      "alge-seeanemone": "projekte/thelake.html",
+      "schlangenseestern-seepocken": "projekte/tiefblau.html",
+      "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
+      //"auster-napfschnecke": "projekte/zwischentoene.html",
   };
 
   //Navbar
@@ -52,7 +52,7 @@
       img.classList.add('movable');
       img.style.position = 'absolute';
 
-      const fixedSize = 300;
+      const fixedSize = 130;
       img.style.width = `${fixedSize}px`;
       img.style.height = `${fixedSize}px`;
 
@@ -69,12 +69,19 @@
     function checkCombination() {
   const inZone = movables.filter(el => el.classList.contains("in-zone"));
 
-  if (inZone.length === 2) {
+  if (inZone.length == 2) {
     const ids = inZone.map(el => el.dataset.id).sort();
     const key = `${ids[0]}-${ids[1]}`;
+    const key2 = `${ids[1]}-${ids[0]}`;
+    console.log(key)
 
-    if (combinations[key]) {
-      window.location.href = combinations[key];
+    if (combinations[key] || combinations[key2]) {
+      setTimeout(() => {
+        document.getElementsByClassName("combo-zone")[0].style.backgroundImage="url('Comp-2_2.gif')";
+      }, "500");
+      setTimeout(() => {
+        window.location.href = combinations[key];
+      }, "1500");
     } 
   }
 }

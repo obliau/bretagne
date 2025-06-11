@@ -70,14 +70,15 @@ body {
 
 .combo-zone {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    width: 260px;
+    height: 260px;
     left: 0;
     right: 0;
-    bottom: 23px;
+    bottom: 10px;
     margin: auto;
-    border-radius: 100px;
-    border: solid 1px black;
-    background-image: url('images/fischnetz.jpg');
-    background-size: cover;
+    /* border: solid 1px black; */
+    background-image: url('netz.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
