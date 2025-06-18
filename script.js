@@ -4,15 +4,16 @@
       "alge",
       "auster",
       "felsgarnele",
+      "hummer",
       "kompassqualle",
       "napfschnecke",
+      "oktopus",
+      "rochen",
       "schlangenseestern",
       "seeanemone",
       "seeigel",
-      "hummer",
-      "oktopus",
       "seepocken",
-      "rochen"
+      "fisch"
     ];
   
     const combinations = {
@@ -28,7 +29,7 @@
       "alge-seeanemone": "projekte/thelake.html",
       "schlangenseestern-seepocken": "projekte/tiefblau.html",
       "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
-      //"auster-napfschnecke": "projekte/zwischentoene.html",
+      "fisch-seeigel": "projekte/zwischentoene.html",
   };
 
   //Navbar
