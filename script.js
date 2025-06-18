@@ -47,6 +47,7 @@
     for (let i = 0; i < kreisNamen.length; i++) {
       const id = kreisNamen[i];
       const img = document.createElement('img');
+      document.getElementById('navigation').appendChild(img)
       img.dataset.id = id;
       img.src = `images/meerestiere/${id}.png`;
       img.classList.add('movable');
@@ -236,3 +237,19 @@ if (!pos.settled) {
 
       }
     });
+
+
+
+function openContent(file) {
+  fetch('/projekte/'+file)
+    .then(response => response.text())
+    .then(data => {
+      let contentWrapper = document.querySelector('#contentWrapper');
+      console.log(contentWrapper)
+      contentWrapper.querySelector('.content').innerHTML = data;
+      contentWrapper.classList.toggle("hidden");
+    })
+    .catch(error => {
+      console.error('Error loading content:', error);
+    });
+}
