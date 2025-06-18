@@ -32,6 +32,10 @@
       "fisch-seeigel": "projekte/zwischentoene.html",
   };
 
+  document.querySelector('.close').addEventListener('click', ()=>{
+    document.querySelector('#contentWrapper').classList.toggle("hidden");
+  })
+
   //Navbar
     function toggleMenu() {
     const menu = document.getElementById("fullscreenMenu");
@@ -82,8 +86,11 @@
         document.getElementsByClassName("combo-zone")[0].style.backgroundImage="url('Comp-2_2.gif')";
       }, "500");
       setTimeout(() => {
-        window.location.href = combinations[key];
+        openContent(combinations[key])
       }, "1500");
+      setTimeout(() => {
+        document.getElementsByClassName("combo-zone")[0].style.backgroundImage="url('netz.png')";
+      }, "2000");
     } 
   }
 }
@@ -242,12 +249,12 @@ if (!pos.settled) {
 
 
 function openContent(file) {
-  fetch('/projekte/'+file)
+  fetch(file)
     .then(response => response.text())
     .then(data => {
       let contentWrapper = document.querySelector('#contentWrapper');
       console.log(contentWrapper)
-      contentWrapper.querySelector('.content').innerHTML = data;
+      contentWrapper.querySelector('.content .contentPage').innerHTML = data;
       contentWrapper.classList.toggle("hidden");
     })
     .catch(error => {

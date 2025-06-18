@@ -7,15 +7,12 @@ html, body {
     position: relative;
 }
 */
-body.projektseite {
-  overflow-y: auto;
-  height: auto;
-}
 
 
 body.home {
     background-image: url('Image (1).png');
     background-size: cover;
+    overflow: hidden;
 }
 
 .menu-toggle {
@@ -89,12 +86,14 @@ body.home {
 }
 
 
-body.projektseite {
+.content {
   font-family: "Space Mono", monospace;
   background: white;
   color: #222;
   padding: 0;
   margin: 0;
+  overflow-y: auto;
+  height: auto;
 }
 
 .page-content {
@@ -261,11 +260,16 @@ body.projektseite {
     /* backdrop-filter: blur(5px); */
 }
 
+#contentWrapper .contentPage {
+    overflow: scroll;
+    height: 100%;
+    padding: 50px;
+}
+
 #contentWrapper .content {
     background: rgba(255, 255, 255, 0.623);
     transition: all 1800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
     width: 90%;
-    padding: 50px;
     left: 0;
     right: 0;
     border-radius: 40px;
@@ -273,14 +277,26 @@ body.projektseite {
     backdrop-filter: blur(40px);
     max-width: 1200px;
     min-height: 80%;
-    margin-top: 40px
+    margin-top: 40px;
+    margin-bottom: 40px;
+    height: 100%;
 }
 
 #contentWrapper.hidden {
-    visibility: hidden;
+    /* visibility: hidden; */
+    transition: all 0.5s ease-in-out;
     top: 100%;
 }
 
 #contentWrapper.hidden .content {
     margin-top: 100%;
+    transition: all 2000ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+}
+
+#contentWrapper .close {
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    right: 40px;
+    top: 40px;
 }
