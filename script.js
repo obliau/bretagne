@@ -246,16 +246,71 @@ if (!pos.settled) {
       }
     });
 
+    function initLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = lightbox.querySelector(".lightbox-img");
+  const closeBtn = lightbox.querySelector(".lightbox-close");
+  const images = Array.from(document.querySelectorAll(".clickable"));
+  let currentIndex = 0;
+
+  function showImage(index) {
+    lightboxImg.src = images[index].src;
+  lightboxImg.style.display = "block";
+  lightbox.classList.remove("hidden");
+  }
+
+  images.forEach((img, index) => {
+    img.addEventListener("click", () => {
+      currentIndex = index;
+      showImage(index);
+    });
+  });
+
+  closeBtn.addEventListener("click", () => {
+     lightbox.classList.add("hidden");
+  lightboxImg.src = "";
+  lightboxImg.style.display = "none";
+  });
+  
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.add("hidden");
+      lightboxImg.src = "";
+    }
+  });
+
+  document.querySelector(".arrow.left").addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  });
+
+  document.querySelector(".arrow.right").addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  });
+}
+
+function loadProjectCSS() {
+  if (!document.querySelector('link[href="projektseiten.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'projektseiten.css';
+    document.head.appendChild(link);
+  }
+}
 
 
 function openContent(file) {
   fetch(file)
     .then(response => response.text())
     .then(data => {
+      loadProjectCSS();
       let contentWrapper = document.querySelector('#contentWrapper');
       console.log(contentWrapper)
       contentWrapper.querySelector('.content .contentPage').innerHTML = data;
       contentWrapper.classList.toggle("hidden");
+      initLightbox();
     })
     .catch(error => {
       console.error('Error loading content:', error);
