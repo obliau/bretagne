@@ -246,49 +246,88 @@ if (!pos.settled) {
       }
     });
 
+const projectImages = {};
+for (let key in combinations) {
+  const [kreis1, kreis2] = key.split("-");
+  const file = combinations[key];
+  projectImages[file] = [kreis1, kreis2];
+}
+
+// Ergänze Bilder in Links
+document.querySelectorAll('#projektListe li a').forEach(link => {
+  const file = link.dataset.file;
+  if (!file || !projectImages[file]) return;
+
+  const [kreis1, kreis2] = projectImages[file];
+
+  const img1 = document.createElement("img");
+  img1.src = `images/meerestiere/${kreis1}.png`;
+  img1.className = "kreis-icon";
+
+  const img2 = document.createElement("img");
+  img2.src = `images/meerestiere/${kreis2}.png`;
+  img2.className = "kreis-icon";
+
+  const text = link.textContent;
+  link.textContent = "";
+  link.appendChild(img1);
+  link.appendChild(document.createTextNode(" " + text + " "));
+  link.appendChild(img2);
+
+  // Klick-Handler
+  link.addEventListener("click", (e) => {
+    e.preventDefault(); // Kein Seitenwechsel
+    toggleMenu();       // Menü schließen
+    openContent(file);  // Projekt laden
+  });
+});
+
+
+
+    // Bilder vergrößert anschauen
     function initLightbox() {
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = lightbox.querySelector(".lightbox-img");
-  const closeBtn = lightbox.querySelector(".lightbox-close");
-  const images = Array.from(document.querySelectorAll(".clickable"));
-  let currentIndex = 0;
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = lightbox.querySelector(".lightbox-img");
+      const closeBtn = lightbox.querySelector(".lightbox-close");
+      const images = Array.from(document.querySelectorAll(".clickable"));
+      let currentIndex = 0;
 
-  function showImage(index) {
-    lightboxImg.src = images[index].src;
-  lightboxImg.style.display = "block";
-  lightbox.classList.remove("hidden");
-  }
+      function showImage(index) {
+        lightboxImg.src = images[index].src;
+        lightboxImg.style.display = "block";
+        lightbox.classList.remove("hidden");
+      }
 
-  images.forEach((img, index) => {
-    img.addEventListener("click", () => {
-      currentIndex = index;
-      showImage(index);
-    });
-  });
+      images.forEach((img, index) => {
+        img.addEventListener("click", () => {
+          currentIndex = index;
+          showImage(index);
+        });
+      });
 
-  closeBtn.addEventListener("click", () => {
-     lightbox.classList.add("hidden");
-  lightboxImg.src = "";
-  lightboxImg.style.display = "none";
-  });
-  
+      closeBtn.addEventListener("click", () => {
+        lightbox.classList.add("hidden");
+        lightboxImg.src = "";
+        lightboxImg.style.display = "none";
+      });
+      
 
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) {
-      lightbox.classList.add("hidden");
-      lightboxImg.src = "";
-    }
-  });
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) {
+          lightbox.classList.add("hidden");
+          lightboxImg.src = "";
+        }
+      });
 
-  document.querySelector(".arrow.left").addEventListener("click", () => {
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    showImage(currentIndex);
-  });
+      document.querySelector(".arrow.left").addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+      });
 
-  document.querySelector(".arrow.right").addEventListener("click", () => {
-    currentIndex = (currentIndex + 1) % images.length;
-    showImage(currentIndex);
-  });
+      document.querySelector(".arrow.right").addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      });
 }
 
 function loadProjectCSS() {
