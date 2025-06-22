@@ -1,8 +1,51 @@
-/* Blog Layout "Briefe an Maurice" */
+/* kreiskombi für die unterseiten*/
 
+.kreis-duo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin: 40px 0 60px 0;
+  position: relative;
+}
+
+.kreis-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: transparent;
+  box-shadow: none;
+  z-index: 1;
+}
+
+.kreis-img.overlap {
+  margin-left: -28px; /* kontrolliert die Überlappung */
+  z-index: 2;
+}
+
+
+.tier-name {
+  font-size: 1rem;
+  color: #333;
+  font-family: "Space Mono", monospace;
+  white-space: nowrap;
+  padding: 0 10px;
+  text-transform: uppercase;
+}
+
+.tier-name.left {
+  margin-right: 10px;
+}
+
+.tier-name.right {
+  margin-left: 10px;
+}
+
+/* Layout für alle Unterseiten */
 .autor {
   font-style: italic;
-  margin-top: -1em;
+  margin-top: -2em;
   margin-bottom: 2em;
   font-size: 1rem;
   color: #444;
@@ -21,7 +64,7 @@
 
 .page-content {
   max-width: 900px;
-  margin: 120px auto 60px auto;
+  margin: 70px auto 60px auto;
   padding: 0 20px;
   line-height: 1.6;
   font-size: 1.05rem;
@@ -39,18 +82,7 @@
 }
 
 
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin: 2em 0;
-}
-
-.image-grid img {
-  width: 100%;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+/* Bilder vergrößert anschauen*/
 
 .lightbox {
   position: fixed;
@@ -106,6 +138,21 @@
 
 .arrow:hover {
   color: #ddd;
+}
+
+
+/* Layout für projekt Briefe */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 2em 0;
+}
+
+.image-grid img {
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* Egor */
