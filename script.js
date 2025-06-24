@@ -44,8 +44,8 @@
 
     const attractor = {
       x: window.innerWidth / 2,
-      y: window.innerHeight - 100,
-      radius: 200,
+      y: window.innerHeight - 70,
+      radius: 150,
       strength: 0.05
     };
 
@@ -58,7 +58,7 @@
       img.classList.add('movable');
       img.style.position = 'absolute';
 
-      const fixedSize = 130;
+      const fixedSize = 80;
       img.style.width = `${fixedSize}px`;
       img.style.height = `${fixedSize}px`;
 

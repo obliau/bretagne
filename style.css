@@ -6,7 +6,20 @@ html, body {
     overflow: hidden; 
     position: relative;
 }
+
 */
+
+
+@font-face {
+  font-family: 'MartianMono';
+  src: url('/MartianMono.ttf') format("truetype-variations");
+  font-weight: 1 999;
+}
+
+body {
+    font-family: 'MartianMono';
+}
+
 body.home {
     background-image: url('Image (1).png');
     background-size: cover;
@@ -19,11 +32,11 @@ body.home {
     left: 20px;
     z-index: 1100;
     cursor: pointer;
-    font-family: Arial, sans-serif;
     font-size: 1rem;
     color: black;
     padding: 10px;
     line-height: 1.2;
+    font-weight: 300;
 }
 
 #fullscreenMenu {
@@ -62,7 +75,6 @@ body.home {
 #fullscreenMenu nav a {
     text-decoration: none;
     color: black;
-    font-family: Arial, sans-serif;
 }
 
 #fullscreenMenu nav ul li a:hover {
@@ -110,8 +122,8 @@ body.home {
 
 .combo-zone {
     position: absolute;
-    width: 260px;
-    height: 260px;
+    width: 160px;
+    height: 160px;
     left: 0;
     right: 0;
     bottom: 10px;
