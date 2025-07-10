@@ -203,6 +203,18 @@
   width: 1500px;
   margin-left: 6em;
 }
+/* tiefblau */
+.video-container {
+  max-width: 900px;
+}
+
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
 /* Carousel 
 .swiper {
