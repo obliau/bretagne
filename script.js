@@ -44,8 +44,8 @@
 
     const attractor = {
       x: window.innerWidth / 2,
-      y: window.innerHeight - 100,
-      radius: 200,
+      y: window.innerHeight - 70,
+      radius: 150,
       strength: 0.05
     };
 
@@ -58,7 +58,7 @@
       img.classList.add('movable');
       img.style.position = 'absolute';
 
-      const fixedSize = 130;
+      const fixedSize = 80;
       img.style.width = `${fixedSize}px`;
       img.style.height = `${fixedSize}px`;
 
@@ -158,41 +158,41 @@ img.style.left = `${left}px`;
         const centerY = base.y + pos.currentY + el.offsetHeight / 2;
 
         const dx = attractor.x - centerX;
-const dy = attractor.y - centerY;
-const distance = Math.sqrt(dx * dx + dy * dy);
+        const dy = attractor.y - centerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-if (distance < attractor.radius) {
-  const settleThreshold = 4;
+        if (distance < attractor.radius) {
+          const settleThreshold = 4;
 
-  if (distance > settleThreshold) {
-    pos.targetX += dx * attractor.strength;
-    pos.targetY += dy * attractor.strength;
-    pos.settled = false;
-  } else {
-    pos.settled = true;
-  }
-}
+          if (distance > settleThreshold) {
+            pos.targetX += dx * attractor.strength;
+            pos.targetY += dy * attractor.strength;
+            pos.settled = false;
+          } else {
+            pos.settled = true;
+          }
+        }
 
-// If not being dragged or attracted, apply subtle drifting
-if (!pos.settled) {
-  // Change direction occasionally
-  pos.driftTimer--;
-  if (pos.driftTimer <= 0) {
-    pos.vx = (Math.random() - 0.5) * 0.2;
-    pos.vy = (Math.random() - 0.5) * 0.2;
-    pos.driftTimer = Math.floor(Math.random() * 120 + 60); // change every 1–2 seconds
-  }
+      // If not being dragged or attracted, apply subtle drifting
+      if (!pos.settled) {
+        // Change direction occasionally
+        pos.driftTimer--;
+        if (pos.driftTimer <= 0) {
+          pos.vx = (Math.random() - 0.5) * 0.2;
+          pos.vy = (Math.random() - 0.5) * 0.2;
+          pos.driftTimer = Math.floor(Math.random() * 120 + 60); // change every 1–2 seconds
+        }
 
-  pos.targetX += pos.vx;
-  pos.targetY += pos.vy;
-}
+        pos.targetX += pos.vx;
+        pos.targetY += pos.vy;
+      }
 
 
-// Only interpolate if not settled
-if (!pos.settled) {
-  pos.currentX = lerp(pos.currentX, pos.targetX, 0.1);
-  pos.currentY = lerp(pos.currentY, pos.targetY, 0.1);
-}
+      // Only interpolate if not settled
+      if (!pos.settled) {
+        pos.currentX = lerp(pos.currentX, pos.targetX, 0.1);
+        pos.currentY = lerp(pos.currentY, pos.targetY, 0.1);
+      }
 
 
         // Smoothly interpolate toward target
@@ -240,7 +240,7 @@ if (!pos.settled) {
             target.classList.remove("in-zone");
           }
 
-          checkCombination();
+          setTimeout(checkCombination, 10);
         }
 
       }
