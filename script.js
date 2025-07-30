@@ -349,7 +349,24 @@ function openContent(file) {
       console.log(contentWrapper)
       contentWrapper.querySelector('.content .contentPage').innerHTML = data;
       contentWrapper.classList.toggle("hidden");
-      initLightbox();
+      setTimeout(() => {
+        const swiperElement = document.querySelector(".mySwiper");
+        const isMenhirkure = document.querySelector(".projekt-menhirkure");
+        if (swiperElement) {
+          new Swiper(".mySwiper", {
+            loop: true,
+            spaceBetween: 20,
+            centeredSlides: !isMenhirkure,
+            slidesPerView: isMenhirkure ? 1 : 'auto',
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+          });
+          initLightbox();
+        }
+      }, 100);
+
     })
     .catch(error => {
       console.error('Error loading content:', error);

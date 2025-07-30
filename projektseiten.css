@@ -216,24 +216,57 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Carousel 
-.swiper {
-  width: 100%;
-  max-width: 800px;
-  margin: 3rem auto;
+/* Menhirküre */
+.projekt-menhirkure .mySwiper .swiper-slide {
+  width: 100% !important;     /* nimmt genau den sichtbaren Bereich ein */
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
-.swiper-slide {
+.projekt-menhirkure .mySwiper .swiper-slide img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;       /* zeigt das ganze Bild ohne zu stauchen */
+  max-height: 90vh;          /* passt sich der Bildschirmhöhe an */
+}
+
+
+/* fotogalerie */
+
+.mySwiper {
+  max-width: 900px;
+  margin: 40px auto 20px auto;
+  overflow: hidden;
+}
+
+.mySwiper .swiper-slide {
+  width: auto;
+  max-width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.swiper-slide img {
-  width: 100%;
+/* Bildgröße anpassen */
+.mySwiper .swiper-slide img {
+  max-height: 500px;
   height: auto;
+  width: auto;
+  object-fit: contain; /* Zeigt das vollständige Bild an */
+  border-radius: 10px;
   display: block;
-  border-radius: 12px;
-  object-fit: cover;
 }
-*/
+
+
+/* Pfeile enger setzen (optional) */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #585858;
+  top: 50%;
+  opacity: 0.8;
+  transform: translateY(-50%);
+}
+
