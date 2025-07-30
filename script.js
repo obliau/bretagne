@@ -363,8 +363,8 @@ function openContent(file) {
               prevEl: ".swiper-button-prev",
             },
           });
-          initLightbox();
         }
+        initLightbox();
       }, 100);
 
     })
