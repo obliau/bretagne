@@ -30,11 +30,9 @@
       "schlangenseestern-seepocken": "projekte/tiefblau.html",
       "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
       "fisch-seeigel": "projekte/zwischentoene.html",
-  };
+      "info": "projekte/info.html",
 
-  document.querySelector('.close').addEventListener('click', ()=>{
-    document.querySelector('#contentWrapper').classList.toggle("hidden");
-  })
+  };
 
   //Navbar
     function toggleMenu() {
@@ -253,12 +251,21 @@ for (let key in combinations) {
   projectImages[file] = [kreis1, kreis2];
 }
 
-// Ergänze Bilder in Links
 document.querySelectorAll('#projektListe li a').forEach(link => {
   const file = link.dataset.file;
-  if (!file || !projectImages[file]) return;
 
-  const [kreis1, kreis2] = projectImages[file];
+  // Klick-Handler: immer aktiv
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleMenu();
+    openContent(file);
+  });
+
+  // Prüfen, ob es gültige Bilddaten gibt
+  const kreise = projectImages[file];
+  if (!kreise || kreise.length !== 2 || !kreise[0] || !kreise[1]) return;
+
+  const [kreis1, kreis2] = kreise;
 
   const img1 = document.createElement("img");
   img1.src = `images/meerestiere/${kreis1}.png`;
@@ -273,14 +280,9 @@ document.querySelectorAll('#projektListe li a').forEach(link => {
   link.appendChild(img1);
   link.appendChild(document.createTextNode(" " + text + " "));
   link.appendChild(img2);
-
-  // Klick-Handler
-  link.addEventListener("click", (e) => {
-    e.preventDefault(); // Kein Seitenwechsel
-    toggleMenu();       // Menü schließen
-    openContent(file);  // Projekt laden
-  });
 });
+
+
 
 
 
@@ -339,8 +341,36 @@ function loadProjectCSS() {
   }
 }
 
+  // Funktion zum Stoppen aller Audio- und Video-Elemente
+  function stopAllMedia() {
+    document.querySelectorAll("audio, video").forEach(el => {
+      el.pause?.();
+      el.currentTime = 0;
+    });
+  }
+
+  // Medien stoppen beim Schließen der Projektseiten
+  document.querySelector('.close').addEventListener('click', () => {
+    stopAllMedia();
+    document.querySelector('#contentWrapper').classList.toggle("hidden");
+  });
+
+  // Medien stoppen beim Seitenverlassen
+  window.addEventListener("beforeunload", stopAllMedia);
+  window.addEventListener("unload", stopAllMedia); 
+  window.addEventListener("pagehide", stopAllMedia); 
+
+  // Medien stoppen beim Tab-Wechsel oder Ausblenden
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      stopAllMedia();
+    }
+  });
+
+
 
 function openContent(file) {
+
   fetch(file)
     .then(response => response.text())
     .then(data => {
@@ -348,7 +378,7 @@ function openContent(file) {
       let contentWrapper = document.querySelector('#contentWrapper');
       console.log(contentWrapper)
       contentWrapper.querySelector('.content .contentPage').innerHTML = data;
-      contentWrapper.classList.toggle("hidden");
+      contentWrapper.classList.remove("hidden");
       setTimeout(() => {
         const swiperElement = document.querySelector(".mySwiper");
         const isMenhirkure = document.querySelector(".projekt-menhirkure");
