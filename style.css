@@ -52,7 +52,7 @@ body.home {
 }
 
 #fullscreenMenu nav li:first-child {
-    margin-bottom: 50px; /* oder ein Wert nach Wunsch */
+    margin-bottom: 50px;
 }
 
 
@@ -65,7 +65,7 @@ body.home {
 
 #fullscreenMenu nav li {
     margin: 10px 0; /* Verringert Abstand zwischen Einträgen */
-    font-size: 1.2rem; /* Optional kleiner machen */
+    font-size: 1.2rem; 
     margin-bottom: 1rem;
 }
 
@@ -138,10 +138,10 @@ body.home {
 }
 
 .kreis-icon {
-  width: 32px; /* oder was du brauchst */
+  width: 31px; 
   height: auto;
   vertical-align: middle;
-  margin: 0 10px; /* Abstand links und rechts vom Bild */
+  margin: 0 10px; 
 }
 
 

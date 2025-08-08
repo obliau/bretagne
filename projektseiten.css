@@ -5,48 +5,6 @@
   font-weight: 1 999;
 }
 
-.kreis-duo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0;
-  margin: 40px 0 60px 0;
-  position: relative;
-}
-
-.kreis-img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: contain;
-  background: transparent;
-  box-shadow: none;
-  z-index: 1;
-}
-
-.kreis-img.overlap {
-  margin-left: -28px; /* kontrolliert die Überlappung */
-  z-index: 2;
-}
-
-
-.tier-name {
-  font-size: 1rem;
-  color: #333;
-  font-family: "Space Mono", monospace;
-  white-space: nowrap;
-  padding: 0 10px;
-  text-transform: uppercase;
-}
-
-.tier-name.left {
-  margin-right: 10px;
-}
-
-.tier-name.right {
-  margin-left: 10px;
-}
-
 /* Layout für alle Unterseiten */
 .autor {
   font-style: italic;
@@ -55,7 +13,44 @@
   font-size: 1rem;
   color: #444;
 }
+.kreis-duo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin: 40px 0 60px 0;
+}
 
+.tier-kombi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px; 
+}
+
+.kreis-img {
+  width: 120px;
+  height: 120px;
+  background: transparent;
+}
+
+.kreis-img.overlap {
+  margin-left: -20px;
+}
+
+.tier-name {
+  font-size: 0.75rem;
+  color: #333;
+  text-transform: uppercase;
+}
+
+.tier-name.above {
+  margin-bottom: 5px;
+}
+
+.tier-name.below {
+  margin-top: 5px;
+}
 
 .content {
   font-family: "Space Mono", monospace;
@@ -187,7 +182,7 @@
   gap: 16px;
   margin: 2em 0;
   justify-content: center;
-  flex-wrap: wrap; /* damit es auf kleineren Bildschirmen umbricht */
+  flex-wrap: wrap; 
 }
 
 .image-row img {
@@ -218,7 +213,7 @@
 
 /* Menhirküre */
 .projekt-menhirkure .mySwiper .swiper-slide {
-  width: 100% !important;     /* nimmt genau den sichtbaren Bereich ein */
+  width: 100%;    
   max-width: 100%;
   display: flex;
   justify-content: center;
@@ -229,8 +224,8 @@
 .projekt-menhirkure .mySwiper .swiper-slide img {
   width: 100%;
   height: auto;
-  object-fit: contain;       /* zeigt das ganze Bild ohne zu stauchen */
-  max-height: 90vh;          /* passt sich der Bildschirmhöhe an */
+  object-fit: contain;       
+  max-height: 90vh;       
 }
 
 
@@ -250,21 +245,18 @@
   align-items: center;
 }
 
-/* Bildgröße anpassen */
 .mySwiper .swiper-slide img {
   max-height: 500px;
   height: auto;
   width: auto;
-  object-fit: contain; /* Zeigt das vollständige Bild an */
+  object-fit: contain; 
   border-radius: 10px;
   display: block;
 }
 
-
-/* Pfeile enger setzen (optional) */
 .swiper-button-next,
 .swiper-button-prev {
-  color: #585858;
+  color: #000000;
   top: 50%;
   opacity: 0.8;
   transform: translateY(-50%);
