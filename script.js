@@ -78,6 +78,7 @@
     const key = `${ids[0]}-${ids[1]}`;
     const key2 = `${ids[1]}-${ids[0]}`;
     console.log(key)
+    console.log(combinations[key])
 
     if (combinations[key] || combinations[key2]) {
       setTimeout(() => {
@@ -117,15 +118,19 @@ img.style.left = `${left}px`;
       img.dataset.rotation = randomRotation;
 
       img._base = { x: left, y: top }; // Store absolute base position
-      img._pos = {
+img._pos = {
+  dragX: 0, // Position durch Drag
+  dragY: 0,
+  waveX: 0, // Position durch Wellenbewegung
+  waveY: 0,
   currentX: 0,
   currentY: 0,
-  targetX: 0,
-  targetY: 0,
   settled: false,
-  vx: (Math.random() - 0.5) * 0.2, // random initial drift velocity
-  vy: (Math.random() - 0.5) * 0.2,
-  driftTimer: 0
+  phaseX: Math.random() * Math.PI * 2,
+  phaseY: Math.random() * Math.PI * 2,
+  ampX: 10 + Math.random() * 15,
+  ampY: 5 + Math.random() * 10,
+  rotPhase: Math.random() * Math.PI * 2, // für Wackelrotation
 };
 
       img.style.transform = `translate(0px, 0px) rotate(${randomRotation}deg)`;
@@ -146,103 +151,100 @@ img.style.left = `${left}px`;
       return a + (b - a) * t;
     }
 
-    function animate() {
-      movables.forEach((el) => {
-        const pos = el._pos;
-        const base = el._base;
+let globalWaveAngle = 0;
 
-        // Calculate current screen position of circle center
-        const centerX = base.x + pos.currentX + el.offsetWidth / 2;
-        const centerY = base.y + pos.currentY + el.offsetHeight / 2;
+function animate() {
+  globalWaveAngle += 0.01;
 
-        const dx = attractor.x - centerX;
-        const dy = attractor.y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+  movables.forEach((el) => {
+    const pos = el._pos;
+    const base = el._base;
 
-        if (distance < attractor.radius) {
-          const settleThreshold = 4;
+    if (!pos.settled && !el.classList.contains("dragging")) {
+      // 🌊 normale Wellenbewegung
+      pos.waveX = Math.sin(globalWaveAngle + pos.phaseX) * pos.ampX;
+      pos.waveY = Math.cos(globalWaveAngle + pos.phaseY) * pos.ampY;
+    } else if (pos.settled && !el.classList.contains("dragging")) {
+      // 🎯 wenn im Attractor und nicht gezogen
+      pos.waveX = 0;
+      pos.waveY = 0;
 
-          if (distance > settleThreshold) {
-            pos.targetX += dx * attractor.strength;
-            pos.targetY += dy * attractor.strength;
-            pos.settled = false;
-          } else {
-            pos.settled = true;
-          }
-        }
+      const x = base.x + pos.dragX + el.offsetWidth / 2;
+      const y = base.y + pos.dragY + el.offsetHeight / 2;
 
-      // If not being dragged or attracted, apply subtle drifting
-      if (!pos.settled) {
-        // Change direction occasionally
-        pos.driftTimer--;
-        if (pos.driftTimer <= 0) {
-          pos.vx = (Math.random() - 0.5) * 0.2;
-          pos.vy = (Math.random() - 0.5) * 0.2;
-          pos.driftTimer = Math.floor(Math.random() * 120 + 60); // change every 1–2 seconds
-        }
+      const dx = attractor.x - x;
+      const dy = attractor.y - y;
 
-        pos.targetX += pos.vx;
-        pos.targetY += pos.vy;
-      }
-
-
-      // Only interpolate if not settled
-      if (!pos.settled) {
-        pos.currentX = lerp(pos.currentX, pos.targetX, 0.1);
-        pos.currentY = lerp(pos.currentY, pos.targetY, 0.1);
-      }
-
-
-        // Smoothly interpolate toward target
-        pos.currentX = lerp(pos.currentX, pos.targetX, 0.1);
-        pos.currentY = lerp(pos.currentY, pos.targetY, 0.1);
-
-
-
-
-        const rotation = el.dataset.rotation;
-        el.style.transform = `translate(${pos.currentX}px, ${pos.currentY}px) rotate(${rotation}deg)`;
-      });
-
-      requestAnimationFrame(animate);
+      pos.dragX += dx * 0.05;
+      pos.dragY += dy * 0.05;
     }
+    // 👉 Wenn dragging aktiv: keine Wellen, keine Attraction – nur Nutzerbewegung
+
+    // Zielposition = Drag + Welle
+    const targetX = pos.dragX + pos.waveX;
+    const targetY = pos.dragY + pos.waveY;
+
+    pos.currentX = lerp(pos.currentX, targetX, 0.05);
+    pos.currentY = lerp(pos.currentY, targetY, 0.05);
+
+    // leichte Wackelrotation nur wenn frei
+    if (!pos.settled && !el.classList.contains("dragging")) {
+      pos.rotPhase += 0.01;
+    }
+    const wobble = Math.sin(pos.rotPhase) * 5;
+    const rotation = parseFloat(el.dataset.rotation) + wobble;
+
+    el.style.transform = `translate(${pos.currentX}px, ${pos.currentY}px) rotate(${rotation}deg)`;
+  });
+
+  requestAnimationFrame(animate);
+}
+
+
+
+
     animate();
 
     // Interact.js drag handling
     interact('.movable').draggable({
-      listeners: {
-        start(event) {
-          event.target.classList.add('dragging');
-        },
-        move(event) {
-          const target = event.target;
-          const pos = target._pos;
-          pos.targetX += event.dx;
-          pos.targetY += event.dy;
-        },
-        end(event) {
-          const target = event.target;
-          target.classList.remove('dragging');
+  listeners: {
+    start(event) {
+      event.target.classList.add('dragging');
+    },
+    move(event) {
+      const pos = event.target._pos;
+      pos.dragX += event.dx;
+      pos.dragY += event.dy;
+    },
+    end(event) {
+  event.target.classList.remove('dragging');
 
-          const pos = target._pos;
-          const x = target._base.x + pos.currentX + target.offsetWidth / 2;
-          const y = target._base.y + pos.currentY + target.offsetHeight / 2;
+  const pos = event.target._pos;
+  const base = event.target._base;
 
-          const dx = attractor.x - x;
-          const dy = attractor.y - y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+  const x = base.x + pos.dragX + pos.waveX + event.target.offsetWidth / 2;
+  const y = base.y + pos.dragY + pos.waveY + event.target.offsetHeight / 2;
 
-          if (distance < attractor.radius) {
-            target.classList.add("in-zone");
-          } else {
-            target.classList.remove("in-zone");
-          }
+  const dx = attractor.x - x;
+  const dy = attractor.y - y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
 
-          setTimeout(checkCombination, 10);
-        }
+  if (distance < attractor.radius) {
+    event.target.classList.add("in-zone");
+    pos.settled = true;
+  } else {
+    event.target.classList.remove("in-zone");
+    pos.settled = false; // zurück ins Schwimmen
+  }
 
-      }
-    });
+  setTimeout(checkCombination, 10);
+}
+
+
+
+  }
+});
+
 
 const projectImages = {};
 for (let key in combinations) {
@@ -341,31 +343,31 @@ function loadProjectCSS() {
   }
 }
 
-  // Funktion zum Stoppen aller Audio- und Video-Elemente
-  function stopAllMedia() {
-    document.querySelectorAll("audio, video").forEach(el => {
-      el.pause?.();
-      el.currentTime = 0;
-    });
-  }
+  // // Funktion zum Stoppen aller Audio- und Video-Elemente
+  // function stopAllMedia() {
+  //   document.querySelectorAll("audio, video").forEach(el => {
+  //     el.pause?.();
+  //     el.currentTime = 0;
+  //   });
+  // }
 
-  // Medien stoppen beim Schließen der Projektseiten
-  document.querySelector('.close').addEventListener('click', () => {
-    stopAllMedia();
-    document.querySelector('#contentWrapper').classList.toggle("hidden");
-  });
+  // // Medien stoppen beim Schließen der Projektseiten
+  // document.querySelector('.close').addEventListener('click', () => {
+  //   stopAllMedia();
+  //   document.querySelector('#contentWrapper').classList.toggle("hidden");
+  // });
 
-  // Medien stoppen beim Seitenverlassen
-  window.addEventListener("beforeunload", stopAllMedia);
-  window.addEventListener("unload", stopAllMedia); 
-  window.addEventListener("pagehide", stopAllMedia); 
+  // // Medien stoppen beim Seitenverlassen
+  // window.addEventListener("beforeunload", stopAllMedia);
+  // // window.addEventListener("unload", stopAllMedia); 
+  // window.addEventListener("pagehide", stopAllMedia); 
 
-  // Medien stoppen beim Tab-Wechsel oder Ausblenden
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      stopAllMedia();
-    }
-  });
+  // // Medien stoppen beim Tab-Wechsel oder Ausblenden
+  // document.addEventListener("visibilitychange", () => {
+  //   if (document.visibilityState === "hidden") {
+  //     stopAllMedia();
+  //   }
+  // });
 
 
 
