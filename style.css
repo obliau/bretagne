@@ -47,6 +47,12 @@ body.home {
     padding: 10px;
     line-height: 1.2;
     font-weight: 300;
+    text-shadow: 1px 1px 5px black;
+}
+
+.menu-toggle.open {
+    color: black;
+    text-shadow: none;
 }
 
 #fullscreenMenu {
@@ -131,22 +137,42 @@ body.home {
 
 .movable {
     filter: brightness(0) invert(1);
+    transition: opacity 2s, scale 1s;
+    transform-origin: center center;
+    scale: 1;
+    mix-blend-mode: exclusion;
+}
+
+.movable.trapped {
+    scale: 0.6;
+    opacity: 0;
 }
 
 
-.combo-zone {
+.combo-zone, .net-close {
     position: absolute;
     width: 160px;
     height: 160px;
     left: 0;
     right: 0;
-    bottom: 10px;
+    bottom: 0px;
     margin: auto;
     /* border: solid 1px black; */
-    background-image: url('netz.png');
+    background-image: url('Shape\ Layer\ 1\ Comp\ 1_1.gif');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    transition: 0.4s .2s all;
+}
+
+.combo-zone.hidden {
+    opacity: 0;
+}
+
+.net-close {
+    z-index: 10;
+    background-image: none;
+    visibility: hidden;
 }
 
 #navigation {

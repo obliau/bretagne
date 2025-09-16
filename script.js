@@ -1,155 +1,213 @@
-    const playground = document.body;
-    const movables = [];
-    const kreisNamen = [
-      "alge",
-      "auster",
-      "felsgarnele",
-      "hummer",
-      "kompassqualle",
-      "napfschnecke",
-      "oktopus",
-      "rochen",
-      "schlangenseestern",
-      "seeanemone",
-      "seeigel",
-      "seepocken",
-      "fisch"
-    ];
-  
-    const combinations = {
-      "alge-napfschnecke": "projekte/briefe.html",
-      "felsgarnele-seepocken": "projekte/egor.html",
-      "kompassqualle-rochen": "projekte/entre-sentieure.html",
-      "hummer-schlangenseestern": "projekte/HumanNature.html",
-      "oktopus-seeanemone": "projekte/IchUndWir.html",
-      "napfschnecke-seeigel": "projekte/mareesImprimees.html",
-      "hummer-rochen": "projekte/menhirküre.html",
-      "felsgarnele-oktopus": "projekte/stayhere.html",
-      "kompassqualle-seeanemone": "projekte/TheInBetween.html",
-      "alge-seeanemone": "projekte/thelake.html",
-      "schlangenseestern-seepocken": "projekte/tiefblau.html",
-      "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
-      "fisch-seeigel": "projekte/zwischentoene.html",
-      "info": "projekte/info.html",
+const playground = document.body;
+const movables = [];
+const kreisNamen = [
+  "alge",
+  "auster",
+  "felsgarnele",
+  "hummer",
+  "kompassqualle",
+  "napfschnecke",
+  "oktopus",
+  "rochen",
+  "schlangenseestern",
+  "seeanemone",
+  "seeigel",
+  "seepocken",
+  "fisch"
+];
 
-  };
+const combinations = {
+  "alge-napfschnecke": "projekte/briefe.html",
+  "felsgarnele-seepocken": "projekte/egor.html",
+  "kompassqualle-rochen": "projekte/entre-sentieure.html",
+  "hummer-schlangenseestern": "projekte/HumanNature.html",
+  "oktopus-seeanemone": "projekte/IchUndWir.html",
+  "napfschnecke-seeigel": "projekte/mareesImprimees.html",
+  "hummer-rochen": "projekte/menhirküre.html",
+  "felsgarnele-oktopus": "projekte/stayhere.html",
+  "kompassqualle-seeanemone": "projekte/TheInBetween.html",
+  "alge-seeanemone": "projekte/thelake.html",
+  "schlangenseestern-seepocken": "projekte/tiefblau.html",
+  "auster-napfschnecke": "projekte/UebergaengeInMusik.html",
+  "fisch-seeigel": "projekte/zwischentoene.html",
+  "info": "projekte/info.html",
 
-  //Navbar
-    function toggleMenu() {
-    const menu = document.getElementById("fullscreenMenu");
-    menu.classList.toggle("hidden");
-    }
+};
 
-    const attractor = {
-      x: window.innerWidth / 2,
-      y: window.innerHeight - 70,
-      radius: 150,
-      strength: 0.05
-    };
+const attractor = {
+  x: window.innerWidth / 2,
+  y: window.innerHeight - 90,
+  radius: 150,
+  strength: 0.05
+};
 
-    for (let i = 0; i < kreisNamen.length; i++) {
-      const id = kreisNamen[i];
-      const img = document.createElement('img');
-      document.getElementById('navigation').appendChild(img)
-      img.dataset.id = id;
-      img.src = `images/meerestiere/${id}.png`;
-      img.classList.add('movable');
-      img.style.position = 'absolute';
+//Navbar
+function toggleMenu() {
+  const menu = document.getElementById("fullscreenMenu");
+  menu.classList.toggle("hidden");
+  document.querySelector('.menu-toggle').classList.toggle('open')
+}
 
-      const fixedSize = 80;
-      img.style.width = `${fixedSize}px`;
-      img.style.height = `${fixedSize}px`;
-
-      img.style.cursor = 'grab';
-
-      const maxTop = window.innerHeight - fixedSize;
-      const maxLeft = window.innerWidth - fixedSize;
-      let top, left;
-
-      let isInsideAttractor = true;
-      let attempts = 0;
-      const maxAttempts = 100;
-    
-    function checkCombination() {
+function checkCombination() {
   const inZone = movables.filter(el => el.classList.contains("in-zone"));
 
   if (inZone.length == 2) {
-    const ids = inZone.map(el => el.dataset.id).sort();
+
+    const ids = inZone.map(el => {
+
+      return el.dataset.id
+    }).sort();
+
     const key = `${ids[0]}-${ids[1]}`;
     const key2 = `${ids[1]}-${ids[0]}`;
-    console.log(key)
-    console.log(combinations[key])
+    console.log(key);
+    console.log(combinations[key]);
 
     if (combinations[key] || combinations[key2]) {
+      testAnimation();
       setTimeout(() => {
-        document.getElementsByClassName("combo-zone")[0].style.backgroundImage="url('Comp-2_2.gif')";
-      }, "500");
+        inZone.forEach(el => el.classList.add('trapped'))
+      }, 300);
+
       setTimeout(() => {
-        openContent(combinations[key])
-      }, "1500");
+        openContent(combinations[key] || combinations[key2]);
+      }, 1500);
+
+    } else {
+      // ❌ Keine gültige Kombination → rauswerfen
       setTimeout(() => {
-        document.getElementsByClassName("combo-zone")[0].style.backgroundImage="url('netz.png')";
-      }, "2000");
-    } 
+
+        inZone.forEach(el => {
+          el.classList.remove("in-zone");
+          const pos = el._pos;
+          pos.settled = false; // Wellenbewegung wieder an
+          pos.dragX += (Math.random() - 0.5) * 200; // kleines „wegschleudern“ nach links/rechts
+          pos.dragY += -150 - Math.random() * 100;   // nach oben
+        });
+      }, 1500);
+    }
   }
 }
 
-do {
-  top = Math.random() * maxTop;
-  left = Math.random() * maxLeft;
 
-  const centerX = left + fixedSize / 2;
-  const centerY = top + fixedSize / 2;
+function spawnItems() {
+  for (let i = 0; i < kreisNamen.length; i++) {
+    const id = kreisNamen[i];
+    const img = document.createElement('img');
+    document.getElementById('navigation').appendChild(img)
+    img.dataset.id = id;
+    img.src = `images/meerestiere/${id}.png`;
+    img.classList.add('movable');
+    img.style.position = 'absolute';
 
-  const dx = centerX - attractor.x;
-  const dy = centerY - attractor.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
+    const fixedSize = 80;
+    img.style.width = `${fixedSize}px`;
+    img.style.height = `${fixedSize}px`;
 
-  isInsideAttractor = distance < attractor.radius + fixedSize / 2;
+    img.style.cursor = 'grab';
 
-  attempts++;
-} while (isInsideAttractor && attempts < maxAttempts);
+    const maxTop = window.innerHeight - fixedSize;
+    const maxLeft = window.innerWidth - fixedSize;
+    let top, left;
 
-img.style.top = `${top}px`;
-img.style.left = `${left}px`;
+    let isInsideAttractor = true;
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    do {
+      top = Math.random() * maxTop;
+      left = Math.random() * maxLeft;
+
+      const centerX = left + fixedSize / 2;
+      const centerY = top + fixedSize / 2;
+
+      const dx = centerX - attractor.x;
+      const dy = centerY - attractor.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      isInsideAttractor = distance < attractor.radius + fixedSize / 2;
+
+      attempts++;
+    } while (isInsideAttractor && attempts < maxAttempts);
+
+    img.style.top = `${top}px`;
+    img.style.left = `${left}px`;
 
 
-      const randomRotation = 45 * Math.floor(Math.random() * 360);
-      img.dataset.rotation = randomRotation;
+    const randomRotation = 45 * Math.floor(Math.random() * 360);
+    img.dataset.rotation = randomRotation;
 
-      img._base = { x: left, y: top }; // Store absolute base position
-img._pos = {
-  dragX: 0, // Position durch Drag
-  dragY: 0,
-  waveX: 0, // Position durch Wellenbewegung
-  waveY: 0,
-  currentX: 0,
-  currentY: 0,
-  settled: false,
-  phaseX: Math.random() * Math.PI * 2,
-  phaseY: Math.random() * Math.PI * 2,
-  ampX: 10 + Math.random() * 15,
-  ampY: 5 + Math.random() * 10,
-  rotPhase: Math.random() * Math.PI * 2, // für Wackelrotation
-};
+    img._base = { x: left, y: top }; // Store absolute base position
+    img._pos = {
+      dragX: 0, // Position durch Drag
+      dragY: 0,
+      waveX: 0, // Position durch Wellenbewegung
+      waveY: 0,
+      currentX: 0,
+      currentY: 0,
+      settled: false,
+      phaseX: Math.random() * Math.PI * 2,
+      phaseY: Math.random() * Math.PI * 2,
+      ampX: 10 + Math.random() * 15,
+      ampY: 5 + Math.random() * 10,
+      rotPhase: Math.random() * Math.PI * 2, // für Wackelrotation
+    };
 
-      img.style.transform = `translate(0px, 0px) rotate(${randomRotation}deg)`;
+    img.style.transform = `translate(0px, 0px) rotate(${randomRotation}deg)`;
 
-      movables.push(img);
-      playground.appendChild(img);
-    }
+    movables.push(img);
+    playground.appendChild(img);
+  }
 
-    
 
-    const attractorEl = document.createElement('div');
-    attractorEl.className = 'attractor';
-    attractorEl.style.left = `${attractor.x}px`;
-    attractorEl.style.top = `${attractor.y}px`;
-    playground.appendChild(attractorEl);
 
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
-    }
+  const attractorEl = document.createElement('div');
+  attractorEl.className = 'attractor';
+  attractorEl.style.left = `${attractor.x}px`;
+  attractorEl.style.top = `${attractor.y}px`;
+  playground.appendChild(attractorEl);
+}
+
+function fillImages() {
+  const projectImages = {};
+  for (let key in combinations) {
+    const [kreis1, kreis2] = key.split("-");
+    const file = combinations[key];
+    projectImages[file] = [kreis1, kreis2];
+  }
+
+  document.querySelectorAll('#projektListe li a').forEach(link => {
+    const file = link.dataset.file;
+
+    // Klick-Handler: immer aktiv
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleMenu();
+      openContent(file);
+    });
+
+    // Prüfen, ob es gültige Bilddaten gibt
+    const kreise = projectImages[file];
+    if (!kreise || kreise.length !== 2 || !kreise[0] || !kreise[1]) return;
+
+    const [kreis1, kreis2] = kreise;
+
+    const img1 = document.createElement("img");
+    img1.src = `images/meerestiere/${kreis1}.png`;
+    img1.className = "kreis-icon";
+
+    const img2 = document.createElement("img");
+    img2.src = `images/meerestiere/${kreis2}.png`;
+    img2.className = "kreis-icon";
+
+    const text = link.textContent;
+    link.textContent = "";
+    link.appendChild(img1);
+    link.appendChild(document.createTextNode(" " + text + " "));
+    link.appendChild(img2);
+  });
+
+}
 
 let globalWaveAngle = 0;
 
@@ -187,6 +245,15 @@ function animate() {
     pos.currentX = lerp(pos.currentX, targetX, 0.05);
     pos.currentY = lerp(pos.currentY, targetY, 0.05);
 
+    // --- Bildschirmgrenzen anwenden ---
+    const minX = 0;
+    const maxX = window.innerWidth - el.offsetWidth;
+    const minY = 0;
+    const maxY = window.innerHeight - el.offsetHeight;
+
+    pos.currentX = Math.max(minX - base.x, Math.min(pos.currentX, maxX - base.x));
+    pos.currentY = Math.max(minY - base.y, Math.min(pos.currentY, maxY - base.y));
+
     // leichte Wackelrotation nur wenn frei
     if (!pos.settled && !el.classList.contains("dragging")) {
       pos.rotPhase += 0.01;
@@ -194,144 +261,114 @@ function animate() {
     const wobble = Math.sin(pos.rotPhase) * 5;
     const rotation = parseFloat(el.dataset.rotation) + wobble;
 
-    el.style.transform = `translate(${pos.currentX}px, ${pos.currentY}px) rotate(${rotation}deg)`;
+    el.style.translate = `${pos.currentX}px ${pos.currentY}px`;
+    el.style.rotate = `${rotation}deg`;
   });
 
   requestAnimationFrame(animate);
 }
 
+function interactHandler() {
+  // Interact.js drag handling
+  interact('.movable').draggable({
+    listeners: {
+      start(event) {
+        event.target.classList.add('dragging');
+      },
+      move(event) {
+        const pos = event.target._pos;
+        pos.dragX += event.dx;
+        pos.dragY += event.dy;
+      },
+      end(event) {
+        event.target.classList.remove('dragging');
 
+        const pos = event.target._pos;
+        const base = event.target._base;
 
+        // aktuelle Bildschirmposition (Drag + Welle)
+        const x = base.x + pos.dragX + pos.waveX + event.target.offsetWidth / 2;
+        const y = base.y + pos.dragY + pos.waveY + event.target.offsetHeight / 2;
 
-    animate();
+        const dx = attractor.x - x;
+        const dy = attractor.y - y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Interact.js drag handling
-    interact('.movable').draggable({
-  listeners: {
-    start(event) {
-      event.target.classList.add('dragging');
-    },
-    move(event) {
-      const pos = event.target._pos;
-      pos.dragX += event.dx;
-      pos.dragY += event.dy;
-    },
-    end(event) {
-  event.target.classList.remove('dragging');
+        if (distance < attractor.radius) {
+          event.target.classList.add("in-zone");
+          pos.settled = true;   // Wellenbewegung AUS
+        } else {
+          event.target.classList.remove("in-zone");
+          pos.settled = false;  // Wellenbewegung AN
+        }
 
-  const pos = event.target._pos;
-  const base = event.target._base;
-
-  const x = base.x + pos.dragX + pos.waveX + event.target.offsetWidth / 2;
-  const y = base.y + pos.dragY + pos.waveY + event.target.offsetHeight / 2;
-
-  const dx = attractor.x - x;
-  const dy = attractor.y - y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-
-  if (distance < attractor.radius) {
-    event.target.classList.add("in-zone");
-    pos.settled = true;
-  } else {
-    event.target.classList.remove("in-zone");
-    pos.settled = false; // zurück ins Schwimmen
-  }
-
-  setTimeout(checkCombination, 10);
-}
-
-
-
-  }
-});
-
-
-const projectImages = {};
-for (let key in combinations) {
-  const [kreis1, kreis2] = key.split("-");
-  const file = combinations[key];
-  projectImages[file] = [kreis1, kreis2];
-}
-
-document.querySelectorAll('#projektListe li a').forEach(link => {
-  const file = link.dataset.file;
-
-  // Klick-Handler: immer aktiv
-  link.addEventListener("click", (e) => {
-    e.preventDefault();
-    toggleMenu();
-    openContent(file);
-  });
-
-  // Prüfen, ob es gültige Bilddaten gibt
-  const kreise = projectImages[file];
-  if (!kreise || kreise.length !== 2 || !kreise[0] || !kreise[1]) return;
-
-  const [kreis1, kreis2] = kreise;
-
-  const img1 = document.createElement("img");
-  img1.src = `images/meerestiere/${kreis1}.png`;
-  img1.className = "kreis-icon";
-
-  const img2 = document.createElement("img");
-  img2.src = `images/meerestiere/${kreis2}.png`;
-  img2.className = "kreis-icon";
-
-  const text = link.textContent;
-  link.textContent = "";
-  link.appendChild(img1);
-  link.appendChild(document.createTextNode(" " + text + " "));
-  link.appendChild(img2);
-});
-
-
-
-
-
-    // Bilder vergrößert anschauen
-    function initLightbox() {
-      const lightbox = document.getElementById("lightbox");
-      const lightboxImg = lightbox.querySelector(".lightbox-img");
-      const closeBtn = lightbox.querySelector(".lightbox-close");
-      const images = Array.from(document.querySelectorAll(".clickable"));
-      let currentIndex = 0;
-
-      function showImage(index) {
-        lightboxImg.src = images[index].src;
-        lightboxImg.style.display = "block";
-        lightbox.classList.remove("hidden");
+        setTimeout(checkCombination, 10);
       }
 
-      images.forEach((img, index) => {
-        img.addEventListener("click", () => {
-          currentIndex = index;
-          showImage(index);
-        });
-      });
 
-      closeBtn.addEventListener("click", () => {
-        lightbox.classList.add("hidden");
-        lightboxImg.src = "";
-        lightboxImg.style.display = "none";
-      });
-      
+    }
+  });
+}
 
-      lightbox.addEventListener("click", (e) => {
-        if (e.target === lightbox) {
-          lightbox.classList.add("hidden");
-          lightboxImg.src = "";
-        }
-      });
+spawnItems();
 
-      document.querySelector(".arrow.left").addEventListener("click", () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        showImage(currentIndex);
-      });
+fillImages();
 
-      document.querySelector(".arrow.right").addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        showImage(currentIndex);
-      });
+
+animate();
+
+interactHandler();
+
+
+
+
+
+function showImage(index) {
+  lightboxImg.src = images[index].src;
+  lightboxImg.style.display = "block";
+  lightbox.classList.remove("hidden");
+}
+
+// Bilder vergrößert anschauen
+function initLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = lightbox.querySelector(".lightbox-img");
+  const closeBtn = lightbox.querySelector(".lightbox-close");
+  const images = Array.from(document.querySelectorAll(".clickable"));
+  let currentIndex = 0;
+
+
+
+  images.forEach((img, index) => {
+    img.addEventListener("click", () => {
+      currentIndex = index;
+      showImage(index);
+    });
+  });
+
+  closeBtn.addEventListener("click", () => {
+    lightbox.classList.add("hidden");
+    lightboxImg.src = "";
+    lightboxImg.style.display = "none";
+  });
+
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.add("hidden");
+      lightboxImg.src = "";
+    }
+  });
+
+  document.querySelector(".arrow.left").addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  });
+
+  document.querySelector(".arrow.right").addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  });
 }
 
 function loadProjectCSS() {
@@ -343,31 +380,31 @@ function loadProjectCSS() {
   }
 }
 
-  // // Funktion zum Stoppen aller Audio- und Video-Elemente
-  // function stopAllMedia() {
-  //   document.querySelectorAll("audio, video").forEach(el => {
-  //     el.pause?.();
-  //     el.currentTime = 0;
-  //   });
-  // }
+// Funktion zum Stoppen aller Audio- und Video-Elemente
+function stopAllMedia() {
+  document.querySelectorAll("audio, video:not(#bgVideo)").forEach(el => {
+    el.pause?.();
+    el.currentTime = 0;
+  });
+}
 
-  // // Medien stoppen beim Schließen der Projektseiten
-  // document.querySelector('.close').addEventListener('click', () => {
-  //   stopAllMedia();
-  //   document.querySelector('#contentWrapper').classList.toggle("hidden");
-  // });
+// Medien stoppen beim Schließen der Projektseiten
+document.querySelector('.close').addEventListener('click', () => {
+  stopAllMedia();
+  document.querySelector('#contentWrapper').classList.toggle("hidden");
+});
 
-  // // Medien stoppen beim Seitenverlassen
-  // window.addEventListener("beforeunload", stopAllMedia);
-  // // window.addEventListener("unload", stopAllMedia); 
-  // window.addEventListener("pagehide", stopAllMedia); 
+// Medien stoppen beim Seitenverlassen
+window.addEventListener("beforeunload", stopAllMedia);
+// window.addEventListener("unload", stopAllMedia); 
+window.addEventListener("pagehide", stopAllMedia);
 
-  // // Medien stoppen beim Tab-Wechsel oder Ausblenden
-  // document.addEventListener("visibilitychange", () => {
-  //   if (document.visibilityState === "hidden") {
-  //     stopAllMedia();
-  //   }
-  // });
+// Medien stoppen beim Tab-Wechsel oder Ausblenden
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    stopAllMedia();
+  }
+});
 
 
 
@@ -403,4 +440,18 @@ function openContent(file) {
     .catch(error => {
       console.error('Error loading content:', error);
     });
+
+
+}
+
+
+function testAnimation() {
+  document.querySelector('.combo-zone').classList.toggle('hidden')
+  let net = document.querySelector('.net-close')
+  net.style.visibility = "visible"
+  net.play()
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
 }
