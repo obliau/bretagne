@@ -64,7 +64,12 @@ function checkCombination() {
     console.log(combinations[key]);
 
     if (combinations[key] || combinations[key2]) {
-      testAnimation();
+      
+      document.querySelector('.combo-zone').classList.toggle('hidden')
+      let net = document.querySelector('.net-close')
+      net.style.visibility = "visible"
+      net.play()
+
       setTimeout(() => {
         inZone.forEach(el => el.classList.add('trapped'))
       }, 300);
@@ -73,20 +78,44 @@ function checkCombination() {
         openContent(combinations[key] || combinations[key2]);
       }, 1500);
 
-    } else {
-      // ❌ Keine gültige Kombination → rauswerfen
-      setTimeout(() => {
+      ejectItems(inZone, 3000)
 
-        inZone.forEach(el => {
-          el.classList.remove("in-zone");
-          const pos = el._pos;
-          pos.settled = false; // Wellenbewegung wieder an
-          pos.dragX += (Math.random() - 0.5) * 200; // kleines „wegschleudern“ nach links/rechts
-          pos.dragY += -150 - Math.random() * 100;   // nach oben
-        });
-      }, 1500);
+      setTimeout(() => {
+        document.querySelector('.combo-zone').classList.toggle('hidden')
+        net.style.visibility = "hidden"
+      }, 2000)
+
+    } else {
+      setTimeout(() => {
+        inZone.forEach(el => el.classList.add('trapped'))
+        document.querySelector('.combo-zone').classList.toggle('reject')
+      }, 300);
+
+      setTimeout(() => {
+        inZone.forEach(el => el.classList.remove('trapped'))
+      }, 1600);
+
+      ejectItems(inZone, 1800)
+
+      setTimeout(() => {
+        document.querySelector('.combo-zone').classList.toggle('reject')
+      }, 3400);
     }
   }
+}
+
+function ejectItems(items, delay) {
+  setTimeout(() => {
+    console.log(items)
+        items.forEach(el => {
+          el.classList.remove("in-zone");
+          el.classList.remove("trapped");
+          const pos = el._pos;
+          pos.settled = false; // Wellenbewegung wieder an
+          pos.dragX = 0
+          pos.dragY = 0
+        });
+      }, delay);
 }
 
 
@@ -445,12 +474,7 @@ function openContent(file) {
 }
 
 
-function testAnimation() {
-  document.querySelector('.combo-zone').classList.toggle('hidden')
-  let net = document.querySelector('.net-close')
-  net.style.visibility = "visible"
-  net.play()
-}
+
 
 function lerp(a, b, t) {
   return a + (b - a) * t;
