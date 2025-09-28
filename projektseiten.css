@@ -53,7 +53,7 @@
 }
 
 .content {
-  font-family: "Space Mono", monospace;
+  /* font-family: "Space Mono", monospace; */
   background: white;
   color: #222;
   padding: 0;
@@ -62,13 +62,7 @@
   height: auto;
 }
 
-.page-content {
-  max-width: 900px;
-  margin: 70px auto 60px auto;
-  padding: 0 20px;
-  line-height: 1.6;
-  font-size: 1.05rem;
-}
+
 
 .blog-content h1 {
   font-size: 2rem;
