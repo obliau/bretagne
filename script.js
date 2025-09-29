@@ -339,6 +339,24 @@ function interactHandler() {
   });
 }
 
+function fadeInAudio(audio) {
+  let vol = 0;
+  const fade = setInterval(() => {
+    vol += 0.01;
+    audio.volume = vol;
+    if (vol >= 0.5) clearInterval(fade);
+  }, 100);
+}
+
+function fadeOutAudio(audio) {
+  let vol = audio.volume;
+  const fade = setInterval(() => {
+    vol -= 0.01;
+    audio.volume = vol;
+    if (vol <= 0.01) clearInterval(fade);
+  }, 100);
+}
+
 spawnItems();
 
 fillImages();
@@ -349,14 +367,31 @@ animate();
 interactHandler();
 
 
+window.addEventListener("load", () => {
+  const audio = document.querySelector(".bgAudio");
+  audio.loop = true;
+  audio.volume = 0;
+
+  function fadeIn() {
+    audio.play().then(() => {
+      fadeInAudio(audio)
+      document.querySelector(".alert").classList.add('hidden')
+    });
+    document.removeEventListener("click", fadeIn);
+    document.removeEventListener("dragstart", fadeIn);
+  }
+
+  // direkt probieren, sonst bei erster Interaktion
+  fadeIn();
+  document.addEventListener("click", fadeIn);
+  document.addEventListener("dragstart", fadeIn);
+});
 
 
 
-function showImage(index) {
-  lightboxImg.src = images[index].src;
-  lightboxImg.style.display = "block";
-  lightbox.classList.remove("hidden");
-}
+
+
+
 
 // Bilder vergrößert anschauen
 function initLightbox() {
@@ -366,7 +401,7 @@ function initLightbox() {
   const images = Array.from(document.querySelectorAll(".clickable"));
   let currentIndex = 0;
 
-
+  console.log("innited")
 
   images.forEach((img, index) => {
     img.addEventListener("click", () => {
@@ -398,6 +433,12 @@ function initLightbox() {
     currentIndex = (currentIndex + 1) % images.length;
     showImage(currentIndex);
   });
+
+  function showImage(index) {
+  lightboxImg.src = images[index].src;
+  lightboxImg.style.display = "block";
+  lightbox.classList.remove("hidden");
+}
 }
 
 function loadProjectCSS() {
@@ -411,7 +452,7 @@ function loadProjectCSS() {
 
 // Funktion zum Stoppen aller Audio- und Video-Elemente
 function stopAllMedia() {
-  document.querySelectorAll("audio, video:not(#bgVideo)").forEach(el => {
+  document.querySelectorAll("audio:not(.bgAudio), video:not(#bgVideo)").forEach(el => {
     el.pause?.();
     el.currentTime = 0;
   });
@@ -421,6 +462,7 @@ function stopAllMedia() {
 document.querySelector('.close').addEventListener('click', () => {
   stopAllMedia();
   document.querySelector('#contentWrapper').classList.toggle("hidden");
+  fadeInAudio(document.querySelector("#wavesAudio"))
 });
 
 // Medien stoppen beim Seitenverlassen
@@ -432,12 +474,22 @@ window.addEventListener("pagehide", stopAllMedia);
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     stopAllMedia();
+    document.querySelectorAll("audio#wavesAudio").forEach(el => {
+      el.pause?.();
+    });
+  } else if(document.visibilityState === "visible") {
+    document.querySelectorAll("audio#wavesAudio").forEach(el => {
+      el.play().catch();
+    });
   }
 });
 
 
 
 function openContent(file) {
+
+  document.querySelector("#catchAudio").play()
+  fadeOutAudio(document.querySelector("#wavesAudio"))
 
   fetch(file)
     .then(response => response.text())

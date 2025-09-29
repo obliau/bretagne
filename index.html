@@ -10,8 +10,16 @@
 
 </head>
 <body class="home">
+
+  <span class="alert">Kombiniere die Meerestiere im Netz<br>um eine Seite zu öffnen</span>
     <div class="menu-toggle" onclick="toggleMenu()">
        <span><b>Zwischenräume</b></span><br><span>Übergänge</span>
+       <svg viewBox="0 0 245 194" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M39 16H214" stroke="white" stroke-width="32" stroke-linecap="round"/>
+<path d="M54 97H229" stroke="white" stroke-width="32" stroke-linecap="round"/>
+<path d="M16 178H191" stroke="white" stroke-width="32" stroke-linecap="round"/>
+</svg>
+
     </div>
 
 <div id="fullscreenMenu" class="hidden">
@@ -35,7 +43,7 @@
   </nav>
 </div>
     <video autoplay muted loop id="bgVideo">
-      <source src="Comp 1_2.mp4" type="video/mp4">
+      <source src="wavesbg.mp4" type="video/mp4">
     </video>
 
     <div id="navigation">
@@ -61,6 +69,14 @@
         <div class="contentPage"></div>
       </div>
     </div>
+
+    <audio class="bgAudio" id="wavesAudio" autoplay loop>
+      <source src="images/wavessound.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio class="bgAudio" id="catchAudio">
+      <source src="images/catch.mp3" type="audio/mpeg">
+    </audio>
     <!-- Interact.js lokal -->
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="script.js"></script>

@@ -63,6 +63,17 @@ body.home {
     text-shadow: none;
 }
 
+.menu-toggle svg {
+    width: 35px;
+    position: absolute;
+    left: 0px;
+    top: 15px;
+}
+
+.menu-toggle span {
+    margin-left: 35px;
+}
+
 #fullscreenMenu {
     position: fixed;
     top: 0;
@@ -168,7 +179,7 @@ body.home {
     bottom: 0px;
     margin: auto;
     /* border: solid 1px black; */
-    background-image: url('Shape\ Layer\ 1\ Comp\ 1_1.gif');
+    background-image: url('combozone.gif');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -283,4 +294,26 @@ body.home {
     right: 40px;
     top: 40px;
     fill: #2f2f2f;
+    stroke: #2f2f2f;
+    stroke-width: 1px;
+
+}
+
+
+
+.alert {
+    font-size: 14px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 180px;
+    text-shadow: 0 0 3px black;
+    z-index: 40;
+    text-align: center;
+    transition: opacity 2s;
+}
+
+.alert.hidden {
+    opacity: 0;
+
 }
